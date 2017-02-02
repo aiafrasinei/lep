@@ -2,13 +2,18 @@ cmake_minimum_required(VERSION 2.8)
 
 project(lep)
 
+FILE(GLOB_RECURSE LUAFiles "Scripts/*.lua")
+add_custom_target(Scripts SOURCES ${LUAFiles})
+
+FILE(GLOB_RECURSE ShaderFiles "Shaders/*.shader")
+add_custom_target(Shaders SOURCES ${ShaderFiles})
 
 include_directories(Source)
 
-set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MTd")
 set (SHORT_PATH_INCL "${CMAKE_CURRENT_SOURCE_DIR}/Source/Libs/Leadwerks/Include")
 include_directories(${SHORT_PATH_INCL})
 
+include_directories("${SHORT_PATH_INCL}/Libraries/")
 include_directories("${SHORT_PATH_INCL}/Libraries/lua-5.1.4")
 include_directories("${SHORT_PATH_INCL}/Libraries/enet-1.3.1/include")
 include_directories("${SHORT_PATH_INCL}/Libraries/freetype-2.4.7/include")
@@ -34,6 +39,8 @@ include_directories("${SHORT_PATH_INCL}/Libraries/RecastNavigation/DetourCrowd/I
 include_directories("${SHORT_PATH_INCL}/Libraries/RecastNavigation/Detour/Include")
 include_directories("${SHORT_PATH_INCL}/Libraries/RecastNavigation/DetourTileCache/Include")
 include_directories("${SHORT_PATH_INCL}/Libraries/NewtonDynamics/coreLibrary_300/source/newton")
+include_directories("${SHORT_PATH_INCL}/Libraries/openssl/include")
+include_directories("${SHORT_PATH_INCL}/Libraries/libogg/include")
 
 include_directories("${SHORT_PATH_INCL}/Classes")
 include_directories("${SHORT_PATH_INCL}/Classes/Drivers/Graphics")
@@ -67,7 +74,17 @@ pthread)
 
 ELSE (WIN32)
 
-set(CMAKE_CXX_FLAGS "/D PSAPI_VERSION=1 /D __STEAM__ /D _CUSTOM_JOINTS_STATIC_LIB /D FT2_BUILD_LIBRARY /D LEADWERKS_3_1 /D DG_DISABLE_ASSERT /D WINDOWS /D WIN32 /D OS_WINDOWS /D OPENGL /D PLATFORM_WINDOWS /D _WIN_32_VER /D _NEWTON_USE_LIB /D PTW32_STATIC_LIB /D PTW32_BUILD /D _NEWTON_STATIC_LIB /D _LIB /D DG_USE_NORMAL_PRIORITY_THREAD /D GLEW_STATIC /D DEBUG /D _DEBUG /D CMAKE_INTDIR=Debug /D _MBCS /errorReport:prompt /WX- /Zc:forScope /RTC1 /Gd /Oy- /MTd /EHsc /nologo")
+add_compile_options(-std:c++latest)
+set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /DPSAPI_VERSION=1 /D__STEAM__ /D_CUSTOM_JOINTS_STATIC_LIB")
+set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /DFT2_BUILD_LIBRARY /DLEADWERKS_3_1 /DDG_DISABLE_ASSERT")
+set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /DWINDOWS /DWIN32 /DOS_WINDOWS /DOPENGL /DPLATFORM_WINDOWS")
+set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /D_WIN_32_VER /D_NEWTON_USE_LIB /DPTW32_STATIC_LIB /DPTW32_BUILD")
+set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /D_NEWTON_STATIC_LIB /D_LIB /DDG_USE_NORMAL_PRIORITY_THREAD")
+set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /DGLEW_STATIC /D_STATICLIB /D \"SLB_LIBRARY\" /MP")
+set (CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MTd /DDEBUG /D_DEBUG")
+set (CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MT")
+
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /NODEFAULTLIB:MSVCRT.lib /NODEFAULTLIB:MSVCRTD.lib")
 
 link_directories("${CMAKE_CURRENT_SOURCE_DIR}/Source/Libs/Leadwerks/Library/Windows/x86/")
 link_directories("${CMAKE_CURRENT_SOURCE_DIR}/Source/Libs/Leadwerks/Library/Windows/x86/Debug/")
@@ -85,6 +102,12 @@ winmm.lib
 Psapi.lib
 OpenAL32.lib
 Leadwerks.lib
+libcryptoMT.lib
+libsslMT.lib
+Rpcrt4.lib
+crypt32.lib
+libcurl.lib
+Msimg32.lib
 )
 
 ENDIF (UNIX)

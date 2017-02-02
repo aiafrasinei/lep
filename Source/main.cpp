@@ -1,18 +1,7 @@
-#define _GLIBCXX_USE_CXX11_ABI 0
+#include "App.h"
 
-#ifndef OS_IOS
-	#ifndef _DLL
-		#ifndef BUILD_STATICLIB
-			#include "App.h"
-		#endif
-	#endif
 
 using namespace Leadwerks;
-
-void DebugErrorHook(char* c)
-{
-	int n=0;//<--------------------------- Add a breakpoint here to catch errors
-}
 
     #ifdef __APPLE__
 int main_(int argc,const char *argv[])
@@ -68,9 +57,6 @@ int main(int argc,const char *argv[])
 		if (!package) return 1;
 	}
 
-	//Add debug hook for catching errors
-	Leadwerks::System::AddHook(System::DebugErrorHook,(void*)DebugErrorHook);
-
     //Load any zip files in main directory
     Leadwerks::Directory* dir = Leadwerks::FileSystem::LoadDir(".");
     if (dir)
@@ -87,64 +73,12 @@ int main(int argc,const char *argv[])
         delete dir;
     }
 
-#ifdef DEBUG
-	std::string debuggerhostname = System::GetProperty("debuggerhostname");
-	if (debuggerhostname!="")
-	{
-		//Connect to the debugger
-		int debuggerport = String::Int(System::GetProperty("debuggerport"));
-		if (!Interpreter::Connect(debuggerhostname,debuggerport))
-		{
-			Print("Error: Failed to connect to debugger with hostname \""+debuggerhostname+"\" and port "+String(debuggerport)+".");
-			return false;
-		}
-		Print("Successfully connected to debugger.");
-		std::string breakpointsfile = System::GetProperty("breakpointsfile");
-		if (breakpointsfile!="")
-		{
-			if (!Interpreter::LoadBreakpoints(breakpointsfile))
-			{
-				Print("Error: Failed to load breakpoints file \""+breakpointsfile+"\".");
-			}
-		}
-	}
-    else
-    {
-    //    Print("No debugger hostname supplied in command line.");
-    }
-#endif
-
-	/*if (FileSystem::GetFileType("Scripts/main.lua") == 1)
-	{
-		//Execute main script file
-		if (Interpreter::ExecuteFile("Scripts/main.lua"))
-		{
-#ifdef DEBUG
-			Interpreter::Disconnect();
-#endif
-			if (!System::SaveSettings(settingsfile)) System::Print("Error: Failed to save settings file \"" + settingsfile + "\".");
-			Steamworks::Shutdown();
-			return 0;
-		}
-		else
-		{
-#ifdef DEBUG
-			Interpreter::Disconnect();
-#endif
-			Steamworks::Shutdown();
-			return 1;
-		}
-	}
-	else
-	{*/
 		//Execute mobile-style App script
 		App* app = new App;
 		if (app->Start())
 		{
 			while (app->Loop()) {}
-#ifdef DEBUG
-			Interpreter::Disconnect();
-#endif
+
 			//Save settings
 			delete app;
 			if (!System::SaveSettings(settingsfile)) System::Print("Error: Failed to save settings file \"" + settingsfile + "\".");
@@ -153,12 +87,6 @@ int main(int argc,const char *argv[])
 		}
 		else
 		{
-#ifdef DEBUG
-			Interpreter::Disconnect();
-#endif
-			Steamworks::Shutdown();
 			return 1;
 		}
-	//}
 }
-#endif
