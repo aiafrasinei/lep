@@ -55,9 +55,11 @@ include_directories("${SHORT_PATH_INCL}/Classes/Math")
 
 IF(UNIX)
 
-set(CMAKE_CXX_FLAGS "-std=c++11 -D_STATICLIB -msse3 -fexceptions -DPLATFORM_LINUX -Dunix -D__STEAM__")
+add_definitions(-D_GLIBCXX_USE_CX11_ABI=0)
 
-link_directories("${CMAKE_CURRENT_SOURCE_DIR}/Source/Libs/Leadwerks/Library/Linux/")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_GLIBCXX_USE_CXX11_ABI=0 -std=c++11 -D_STATICLIB -msse3 -fexceptions -DPLATFORM_LINUX -Dunix -D__STEAM__")
+
+link_directories("${CMAKE_CURRENT_SOURCE_DIR}/Source/Libs/Leadwerks/Library/Linux/Debug")
 
 add_executable (lep Source/main.cpp Source/App.cpp)
 
@@ -68,13 +70,17 @@ dl
 openal
 GL
 GLU
-libsteam_api.so
+"${CMAKE_CURRENT_SOURCE_DIR}/Source/Libs/Leadwerks/Library/Linux/libsteam_api.so"
 X11
+Xrender
+Xext
+Xft
 pthread)
 
 ELSE (WIN32)
 
 add_compile_options(-std:c++latest)
+
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /DPSAPI_VERSION=1 /D__STEAM__ /D_CUSTOM_JOINTS_STATIC_LIB")
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /DFT2_BUILD_LIBRARY /DLEADWERKS_3_1 /DDG_DISABLE_ASSERT")
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /DWINDOWS /DWIN32 /DOS_WINDOWS /DOPENGL /DPLATFORM_WINDOWS")
