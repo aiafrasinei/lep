@@ -42,6 +42,9 @@ include_directories("${SHORT_PATH_INCL}/Libraries/NewtonDynamics/coreLibrary_300
 include_directories("${SHORT_PATH_INCL}/Libraries/openssl/include")
 include_directories("${SHORT_PATH_INCL}/Libraries/libogg/include")
 
+include_directories("${SHORT_PATH_INCL}/Libraries/NewtonDynamics/packages/thirdParty/timeTracker")
+
+include_directories("${SHORT_PATH_INCL}/")
 include_directories("${SHORT_PATH_INCL}/Classes")
 include_directories("${SHORT_PATH_INCL}/Classes/Drivers/Graphics")
 include_directories("${SHORT_PATH_INCL}/Classes/Drivers/Network")
@@ -61,7 +64,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_GLIBCXX_USE_CXX11_ABI=0 -std=c++11 -D
 
 link_directories("${CMAKE_CURRENT_SOURCE_DIR}/Source/Libs/Leadwerks/Library/Linux/Debug")
 
-add_executable (lep Source/main.cpp Source/App.cpp)
+add_executable (lep Source/main.cpp)
 
 target_link_libraries(lep
 m
@@ -75,7 +78,8 @@ X11
 Xrender
 Xext
 Xft
-pthread)
+pthread
+curl)
 
 ELSE (WIN32)
 
@@ -114,7 +118,9 @@ Rpcrt4.lib
 crypt32.lib
 libcurl.lib
 Msimg32.lib
-)
+newton_d.lib
+dContainers_d.lib
+dCustomJoints_d.lib)
 
 ENDIF (UNIX)
 

@@ -1,5 +1,5 @@
 # lep
-Basic c++ project using cmake for Leadwerks engine (version 4.3)
+Basic c++ project using cmake for Leadwerks engine (version 4.4)
 
 Leadwerks site:
 http://www.leadwerks.com/

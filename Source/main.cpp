@@ -1,92 +1,35 @@
-#include "App.h"
-
+#include "Leadwerks.h"
 
 using namespace Leadwerks;
 
-    #ifdef __APPLE__
-int main_(int argc,const char *argv[])
+
+Model* model = NULL;
+
+int main(int argc, const char *argv[])
 {
-	#else
-int main(int argc,const char *argv[])
-{
-	#endif
+	Leadwerks::Window* window = Leadwerks::Window::Create();
+        Context* context = Context::Create(window);
+        World* world = World::Create();
+        Camera* camera = Camera::Create();
+        camera->Move(0,0,-3);
+        Light* light = DirectionalLight::Create();
+        light->SetRotation(35,35,0);
+        
+        //Create a model
+        model = Model::Box();
+        model->SetColor(0.0,0.0,1.0);
 
-/*#ifdef _WIN32
-	//Enable low-fragmentation heap
-	HANDLE heaps[1025];
-	DWORD nheaps = GetProcessHeaps((sizeof(heaps) / sizeof(HANDLE)) - 1, heaps);
-	for (DWORD i = 0; i < nheaps; ++i) {
-		ULONG  enableLFH = 2;
-		HeapSetInformation(heaps[i], HeapCompatibilityInformation, &enableLFH, sizeof(enableLFH));
-	}
-#endif*/
-
-	//Load saved settings
-	std::string settingsfile = std::string(argv[0]);
-	settingsfile = FileSystem::StripAll(settingsfile);
-	if (String::Right(settingsfile, 6) == ".debug") settingsfile = String::Left(settingsfile, settingsfile.length() - 6);
-	System::AppName = settingsfile;
-	std::string settingsdir = FileSystem::GetAppDataPath();
-#ifdef __linux__
-	#ifndef __ANDROID__
-		settingsdir = settingsdir + "/." + String::Lower(settingsfile);
-	#else
-		settingsdir = settingsdir + "/" + settingsfile;
-	#endif
-#else
-	settingsdir = settingsdir + "/" + settingsfile;
-#endif
-	if (FileSystem::GetFileType(settingsdir) == 0) FileSystem::CreateDir(settingsdir);
-	settingsfile = settingsdir + "/" + settingsfile + ".cfg";
-	System::LoadSettings(settingsfile);
-
-	//Set program path
-	System::AppPath = FileSystem::ExtractDir(argv[0]);
-
-	//Load command-line parameters
-	System::ParseCommandLine(argc, argv);
-
-	//Enable Lua sandboxing
-	if (String::Int(System::GetProperty("sandbox")) != 0) Interpreter::sandboxmode = true;
-
-	//Switch directory
-	std::string gamepack = System::GetProperty("game");
-	if (gamepack != "")
-	{
-		Package* package = Package::Load(gamepack);
-		if (!package) return 1;
-	}
-
-    //Load any zip files in main directory
-    Leadwerks::Directory* dir = Leadwerks::FileSystem::LoadDir(".");
-    if (dir)
-    {
-        for (int i=0; i<dir->files.size(); i++)
+        while (true)
         {
-            std::string file = dir->files[i];
-			std::string ext = Leadwerks::String::Lower(Leadwerks::FileSystem::ExtractExt(file));
-            if (ext=="zip" || ext=="pak")
-            {
-                Leadwerks::Package::Load(file);
-            }
+                if (window->Closed() || window->KeyDown(Key::Escape)) return false;
+    
+                model->Turn(0,Leadwerks::Time::GetSpeed(),0);
+
+                Leadwerks::Time::Update();
+                world->Update();
+                world->Render();
+                context->Sync(false);
+
         }
-        delete dir;
-    }
-
-		//Execute mobile-style App script
-		App* app = new App;
-		if (app->Start())
-		{
-			while (app->Loop()) {}
-
-			//Save settings
-			delete app;
-			if (!System::SaveSettings(settingsfile)) System::Print("Error: Failed to save settings file \"" + settingsfile + "\".");
-			System::Shutdown();
-			return 0;
-		}
-		else
-		{
-			return 1;
-		}
+        return 0;
 }
