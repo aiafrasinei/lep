@@ -99,7 +99,7 @@ set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /NODEFAULTLIB:MSVCRT.lib /
 link_directories("${CMAKE_CURRENT_SOURCE_DIR}/Source/Libs/Leadwerks/Library/Windows/x86/")
 link_directories("${CMAKE_CURRENT_SOURCE_DIR}/Source/Libs/Leadwerks/Library/Windows/x86/Debug/")
 
-add_executable (lep Source/main.cpp Source/App.cpp)
+add_executable (lep Source/main.cpp)
 
 target_link_libraries(lep
 lua51.lib
