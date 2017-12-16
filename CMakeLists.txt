@@ -28,21 +28,21 @@ include_directories("${SHORT_PATH_INCL}/Libraries/steamworks/public/steam")
 include_directories("${SHORT_PATH_INCL}/Libraries/glslang")
         
 include_directories("${SHORT_PATH_INCL}/Libraries/VHACD/src/VHACD_Lib/inc")
-include_directories("${SHORT_PATH_INCL}/Libraries/NewtonDynamics/packages/dCustomJoints")
-include_directories("${SHORT_PATH_INCL}/Libraries/NewtonDynamics/packages/dNewton")
-include_directories("${SHORT_PATH_INCL}/Libraries/NewtonDynamics/packages/dContainers")
-include_directories("${SHORT_PATH_INCL}/Libraries/NewtonDynamics/packages/dMath")
 include_directories("${SHORT_PATH_INCL}/Libraries/RecastNavigation/Recast/Include")
 include_directories("${SHORT_PATH_INCL}/Libraries/RecastNavigation/DebugUtils/Include")
 include_directories("${SHORT_PATH_INCL}/Libraries/RecastNavigation/Detour/Include")
 include_directories("${SHORT_PATH_INCL}/Libraries/RecastNavigation/DetourCrowd/Include")
 include_directories("${SHORT_PATH_INCL}/Libraries/RecastNavigation/Detour/Include")
 include_directories("${SHORT_PATH_INCL}/Libraries/RecastNavigation/DetourTileCache/Include")
-include_directories("${SHORT_PATH_INCL}/Libraries/NewtonDynamics/coreLibrary_300/source/newton")
 include_directories("${SHORT_PATH_INCL}/Libraries/openssl/include")
 include_directories("${SHORT_PATH_INCL}/Libraries/libogg/include")
-
-include_directories("${SHORT_PATH_INCL}/Libraries/NewtonDynamics/packages/thirdParty/timeTracker")
+include_directories("${SHORT_PATH_INCL}/Libraries/NewtonDynamics/sdk/dMath")
+include_directories("${SHORT_PATH_INCL}/Libraries/NewtonDynamics/sdk/dgNewton")
+include_directories("${SHORT_PATH_INCL}/Libraries/NewtonDynamics/sdk/dContainers")
+include_directories("${SHORT_PATH_INCL}/Libraries/NewtonDynamics/sdk/dgCore")
+include_directories("${SHORT_PATH_INCL}/Libraries/NewtonDynamics/sdk/dgTimeTracker")
+include_directories("${SHORT_PATH_INCL}/Libraries/NewtonDynamics/sdk/dgPhysics")
+include_directories("${SHORT_PATH_INCL}/Libraries/NewtonDynamics/sdk/dCustomJoints")
 
 include_directories("${SHORT_PATH_INCL}/")
 include_directories("${SHORT_PATH_INCL}/Classes")
@@ -57,8 +57,6 @@ include_directories("${SHORT_PATH_INCL}/Classes/GUI")
 include_directories("${SHORT_PATH_INCL}/Classes/Math")
 
 IF(UNIX)
-
-add_definitions(-D_GLIBCXX_USE_CX11_ABI=0)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_GLIBCXX_USE_CXX11_ABI=0 -std=c++11 -D_STATICLIB -msse3 -fexceptions -DPLATFORM_LINUX -Dunix -D__STEAM__")
 
@@ -83,7 +81,7 @@ curl)
 
 ELSE (WIN32)
 
-add_compile_options(-std:c++latest)
+add_compile_options(-std:c++14)
 
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /DPSAPI_VERSION=1 /D__STEAM__ /D_CUSTOM_JOINTS_STATIC_LIB")
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /DFT2_BUILD_LIBRARY /DLEADWERKS_3_1 /DDG_DISABLE_ASSERT")
